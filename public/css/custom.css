@@ -1,0 +1,39 @@
+.pageheader {
+    margin-bottom: 10px !important;
+}
+
+body {
+	background-color: none !important;
+	/*background-image: url("../images/background1.gif");*/
+	background-attachment: fixed;
+}
+
+/*#sidebar {
+	background: none !important;
+}*/
+
+/*#navigation {
+	background: transparent;
+}*/
+.parsley-errors-list {
+	background: #e05d6f !important;
+    /*height: 14px !important;*/
+    color: #fff !important;
+    padding-top: 2px !important;
+    padding-left: 4px !important;
+    font-weight: bold !important;
+}
+
+.hz-menu #sidebar .panel-group .panel-collapse.collapse {
+    background-color: rgba(255,255,255,.9) !important;
+}
+#navigation > li a {
+    color: rgb(81, 68, 95) !important;
+}
+.hz-menu #navigation > li.dropdown > ul {
+    background-color : rgba(255,255,255,.9);
+}
+
+.tile {
+    background-color: rgba(255,255,255,.9) !important;
+}
