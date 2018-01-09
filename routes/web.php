@@ -31,6 +31,9 @@ Route::post('/chit/schem/store', 'SchemeController@chitSchemeInsertAndUpdate')->
 Route::get('/chit/group/index', 'SchemeController@chitGroupIndex')->name('chit-group-index');
 Route::post('/chit/group/store', 'SchemeController@chitGroupInsertAndUpdate')->name('chit-group-store');
 Route::get('/chit/mapping', 'SchemeController@chitMapping');
+Route::get('/mapped/chit/groups', 'SchemeController@mappedChitGroups');
+Route::post('/approve/chit/group', 'SchemeController@approveChitGroups');
+
 Route::get('/map/customers/to/group/{chit_group_id}', 'SchemeController@mapCustomersToGroup');
 Route::post('/map/members/to/chit', 'SchemeController@mapMembersToChit')->name('map-chit-members');
 //settings

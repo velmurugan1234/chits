@@ -74,9 +74,7 @@
                                 <div class="tile-body table-custom">
 
                                     <div class="table-responsive table table-striped">
-                                                    <a href="javascript:void(0)" class="btn btn-outline btn-primary dim add-qustion " type="button">Add &nbsp;&nbsp;
-                  <i class="fa fa-plus-circle"></i>
-                </a>
+                                                    
                
                 {{ Form::open(array('route' => array('map-chit-members','insert'), 'class' => 'form-horizontal form-label-left', 'method' => 'POST')) }}
                      <input type="hidden" name="re_id"  value="{{ $re_id }}"/>
@@ -90,25 +88,34 @@
                                                 <th>Ticket No</th>
                                             </tr>
                                             </thead>
+                                            <tbody>
                                             @foreach($chit_mem as $key => $value)
                                             <input type="hidden" name="chit_mem_id[]"  value="{{ $value->chit_mem_id }}"/> 
 
                                             <tr><td></td><td>{{ Form::select("customer_name_update[]",["" => "Select"] + $customers->toArray(), $value->customer_id , ["class" => "form-control col-md-8 col-xs-12 customer_id", "required"]) }}</td><td><input type="text" name="customer_id_update[]" placeholder="Customer code" required class="form-control" value="{{ $value->customer_id }}" style="text-align:center;background-color:#fff!important;border : solid 1px #7db3e1!important;border-radius : 5px;text-align: center;" /></td>
                                             <td>
                                             <input type="text" 
-                                            name="ticket_no_update[]" class="form-control" value="{{ $value->chit_group_ticket_no }}"/>
+                                            name="ticket_no_update[]" class="form-control" value="{{ $value->ticket_no }}"/>
+                                            </td>
+                                            <td>
+                                                {{ Form::select('lot_preference_update[]',['' => 'Select', '05' => 'O1 to 05', '10' => 'O6 to 10', '15' => '11 to 15', '20' => '16 to 20'] , $value->lot_preference, ['class' => 'form-control col-md-8 col-xs-12', 'data-parsley-trigger' => 'change']) }}
                                             </td>
                                             </tr>
                                             @endforeach
-                                            <tbody>
-                                            
                                             </tbody>
                                                
-                                        </table>
-                                                      <button class="btn btn-primary " type="submit" style="float : right;margin: 0 5px 0 0;">
-                  Save 
+                                        </table><br>
+                                          <div>
+                                                <a href="javascript:void(0)" class="btn btn-outline btn-warning dim add-qustion " type="button">Add &nbsp;&nbsp;
+                                                      <i class="fa fa-plus-circle"></i>
+                                                    </a>
+
+                                                      <button class="btn btn-success " type="submit" style="float : right;margin: 0 5px 0 0;">Save 
+                                                      </button>
+
+                                          </div>
                
-              </button> 
+            
                                             {{ Form::close() }}
                                     </div>
 
@@ -117,7 +124,7 @@
                       </section>  
       
       </div>
-      <script src="{!! asset('js/vendor/jquery/jquery-1.11.2.min.js') !!}"></script>
+ 
 
 <script type="text/javascript">
     $('.submit').click(function(){
@@ -126,19 +133,20 @@
         
     });
     $('.add-qustion').click(function() {
-   
-    var default_msg = $('#score_settings_table tbody tr:eq(0)').children("td:first").text()  
+  // alert('hee');
+    // var default_msg = $('#score_settings_table tbody tr:eq(0)').children("td:first").text()  
 
-    if($.trim(default_msg) == $.trim('Sorry! No matching records found')) {
-      $('#score_settings_table tbody').html('');
-    }
+    // if($.trim(default_msg) == $.trim('Sorry! No matching records found')) {
+    //   $('#score_settings_table tbody').html('');
+    // }
 
      @php $currenttime = \Carbon\Carbon::now()->toDayDateTimeString(); @endphp
 
     var trlength = $('tbody tr').length;
-    if(trlength < 19){
+   
+    if(trlength < 19) {
 
-        $('#project-progress tbody').append('<tr><td></td><td>{{ Form::select("customer_name[]",["" => "Select"] + $customers->toArray(), null, ["class" => "form-control col-md-8 col-xs-12 customer_id", "required"]) }}</td><td><input type="text" name="customer_id[]" placeholder="Customer code" required class="form-control" style="text-align:center;background-color:#fff!important;border : solid 1px #7db3e1!important;border-radius : 5px;text-align: center;" /></td><td></td></tr>');
+        $('#project-progress tbody').append('<tr><td></td><td>{{ Form::select("customer_name[]",["" => "Select"] + $customers->toArray(), null, ["class" => "form-control col-md-8 col-xs-12 customer_id", "required"]) }}</td><td><input type="text" name="customer_id[]" placeholder="Customer code" required class="form-control" style="text-align:center;background-color:#fff!important;border : solid 1px #7db3e1!important;border-radius : 5px;text-align: center;" /></td><td></td><td>{{ Form::select("lot_preference[]",["" => "Select", "05" => "O2 to 05", "10" => "O6 to 10", "15" => "11 to 15", "20" => "16 to 20"] ,null, ["class" => "form-control col-md-8 col-xs-12", "data-parsley-trigger" => "change"]) }}</td></tr>');
 
             $('td, td input').css("text-align","center");
             serialNo();
@@ -147,7 +155,7 @@
 
     }
     else if(trlength == 19){
-         $('#project-progress tbody').append('<tr><td></td><td><input type="text"  name="customer_name[]" class="form-control" value="Sathy Chit Funds Pvt Ltd"></td><td><input type="text" name="customer_id[]" value="A000" placeholder="Customer code" required class="form-control" style="text-align:center;background-color:#fff!important;border : solid 1px #7db3e1!important;border-radius : 5px;text-align: center;" /></td><td></td></tr>');
+         $('#project-progress tbody').append('<tr><td></td><td><input type="text"  name="customer_name[]" class="form-control" value="Sathy Chit Funds Pvt Ltd" readonly></td><td><input type="text" name="customer_id[]" value="A000" placeholder="Customer code" required class="form-control" readonly style="text-align:center;background-color:#fff!important;border : solid 1px #7db3e1!important;border-radius : 5px;text-align: center;" /></td><td></td><td>{{ Form::select("lot_preference[]",["01" => "O1"] ,null, ["class" => "form-control col-md-8 col-xs-12", "data-parsley-trigger" => "change","readonly" ]) }}</td></tr>');
 
             $('td, td input').css("text-align","center");
             serialNo();
@@ -156,13 +164,14 @@
    
 });
 
-    $(document).on('change','.customer_id',function(){
+    $(document).on('change','.customer_id',function() {
+    
       var names = this.value;
-      if(names != 'A000'){
-      var row = $(this).attr('data-id');
-      row = row - 1;
-      $("tbody tr:eq("+ row +") td:eq(2) input").val(names);
-        }
+      if(names != 'A000') {
+            var row = $(this).attr('data-id');
+            row = row - 1;
+            $("tbody tr:eq("+ row +") td:eq(2) input").val(names);
+      }
     });
     $(document).ready(function(){
         serialNo();

@@ -33,7 +33,7 @@
         <script src="{{URL::to('/')}}/js/vendor/modernizr/modernizr-2.8.3-respond-1.4.2.min.js"></script>
         <!--/ modernizr -->
 
-
+             <script src="{!! asset('js/vendor/jquery/jquery-1.11.2.min.js') !!}"></script>
 
 
     </head>

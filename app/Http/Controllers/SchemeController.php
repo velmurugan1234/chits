@@ -80,7 +80,8 @@ class SchemeController extends Controller
                                 ->select('chit_members.*','customers.applicant_name','chit_groups.chit_group_ticket_no')
                                 ->leftjoin("customers","chit_members.customer_id","=","customers.customer_id")
                                 ->leftjoin("chit_groups","chit_members.chit_group_id","=","chit_groups.chit_group_id")
-                                //->where('chit_members.chit_group_id',$chit_group_id)
+                                ->orderBy('ticket_no', 'asc')
+                                ->where('chit_members.chit_group_id',$chit_group_id)
                                 ->get();
                                 $re_id = $chit_group_id;
 
@@ -90,36 +91,37 @@ class SchemeController extends Controller
     public function mapMembersToChit(Request $request)
     {
         $input = $request->all();
+        // dd($input);
         $insert_value_array = array(); 
         if(isset($input['customer_id'])) {
 
             foreach($input['customer_id'] as $data_key => $value) {
 
-              $insert_value_array['customer_id'] = $value;
-              $explode = explode("/ ",$input['ticket_no'][$data_key]);
-              $insert_value_array['chit_group_id'] = trim($explode[1]);
-              $this->chit_member->create($insert_value_array); 
+                  $insert_value_array['customer_id'] = $value;
+                  $insert_value_array['chit_group_id'] = $request->re_id;
+                  $insert_value_array['ticket_no'] = $input['ticket_no'][$data_key];
+                  $insert_value_array['lot_preference'] = $input['lot_preference'][$data_key];
+                  $this->chit_member->create($insert_value_array);
+
+                  $result = $this->chit_groups->find($request->re_id);
+                  $result->members_count = $result->members_count + 1;
+                  $result->save();
             }
                            
         }
+
         if(!empty($input['chit_mem_id'])) {
 
             foreach($input['chit_mem_id'] as $data_key => $value) {
 
-                $insert_value_array['customer_id'] = $input['customer_id_update'][$data_key];
-                if(!empty($input['ticket_no_update'][$data_key])){
-                     $explode = explode("-",$input['ticket_no_update'][$data_key]);
+                  $insert_value_array['customer_id'] = $input['customer_id_update'][$data_key];
 
-              $insert_value_array['chit_group_id'] = str_replace('0','',trim($explode[1]));
+                  $insert_value_array['chit_group_id'] = $request->re_id;
+                  $insert_value_array['ticket_no'] = $input['ticket_no_update'][$data_key];
+                  $insert_value_array['lot_preference'] = $input['lot_preference_update'][$data_key];
 
-                }
-                                   $input['ticket_no_update'][$data_key] = '""';
-
-                
-               if(!empty($value) && !empty($this->chit_member)) {
-
-                  $this->chit_member->where('chit_mem_id','=',$value)->update($insert_value_array);
-                }
+                  $this->chit_member->find($value)->update($insert_value_array);
+                  
             }
 
         }
@@ -131,6 +133,19 @@ class SchemeController extends Controller
         }           
     
         return redirect('/map/customers/to/group/'.$request->re_id);
-    }
+      }
+
+      public function mappedChitGroups()
+      {
+            $result = $this->chit_groups->where('members_count', 20)->get();
+            return view('scheme.mapped-chit-groups',compact('result'));
+      }
+
+      public function approveChitGroups(Request $request)
+      {
+           
+            $this->chit_groups->find($request->chit_group_id)->update(['is_approve' => 1]);
+            return Response()->json();
+      }
 }
 

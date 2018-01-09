@@ -1,4 +1,4 @@
-<!-- ================================================
+================================================
 ================= SIDEBAR Content ===================
 ================================================= -->
 <aside id="sidebar">
@@ -47,11 +47,24 @@
                                     <li><a href="{{ url('bank/index') }}"><i class="fa fa-caret-right"></i> Banks</a></li>
                                 </ul>
                             </li>
+
                             <li>
+                                <a href="#"><i class="fa fa-list"></i> <span>Chit Mapping</span></a>
+                                <ul>
+                                    <li><a href="{{  url('chit/mapping') }}">
+                                        <i class="fa fa-caret-right"></i> 
+                                        Opened Chit Groups</a>
+                                    </li>
+                                    <li><a href="{{  url('mapped/chit/groups') }}"><i class="fa fa-caret-right"></i> Mapped Chit Groups</a></li>
+                                    
+                                </ul>
+                            </li>
+
+                            <!-- <li>
                                 <a href="{{ url('chit/mapping') }}"><i class="fa fa-list"></i> 
                                     <span>Chit Mapping</span></a>
 
-                            </li>
+                            </li> -->
                            <li>
                                 <a href="{{ url('my/registor/index') }}"><i class="fa fa-list"></i> 
                                     <span>My Registor</span></a>
@@ -74,4 +87,4 @@
 
 
 </aside>
-<!--/ SIDEBAR Content -->
+<!--/ SIDEBAR Content
