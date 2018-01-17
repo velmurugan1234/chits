@@ -22,7 +22,7 @@ Route::post('/set/theme', 'HomeController@setTheme');
 //Customers
 Route::get('/customer/index', 'CustomerController@index')->name('customer-index');
 Route::get('/add/edit/customer', 'CustomerController@create');
-
+Route::post('/store/customer', 'CustomerController@store')->name('customer-store');
 
 //Schemes
 Route::get('/chit/scheme/index', 'SchemeController@schemeIndex')->name('scheme-index');

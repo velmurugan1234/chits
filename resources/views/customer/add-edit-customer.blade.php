@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Add Customer')
+
 @section('content')
 
    <section id="content">
@@ -45,7 +47,7 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab1">
 
-                                    <form name="step1" role="form">
+                               {{ Form::open(array('route' => array('customer-store','store'), 'id' => 'form1', 'method' => 'POST', 'files' => 'true')) }}
 
                                           <div class="row">
                                             <div class="form-group col-md-4">
@@ -57,13 +59,13 @@
                                             <div class="form-group col-md-4">
                                                 <label>Applicant Name</label>
                                                 
-                                                    <input id="applicantname1" class="form-control required" placeholder="Enter Applicant Name" name="applicantname" type="text" aria-required="true"> 
+                                                    <input id="applicantname1" class="form-control required" placeholder="Enter Applicant Name" name="applicant_name" type="text" aria-required="true"> 
                                                 
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label>Father Name</label>
                                                 
-                                                  <input id="fathername1" class="form-control required" placeholder="Enter Applicant Father Name" name="fathername" type="text" aria-required="true"> 
+                                                  <input id="fathername1" class="form-control required" placeholder="Enter Applicant Father Name" name="father_name" type="text" aria-required="true"> 
                                                 
                                             </div>
                                             <div class="form-group col-md-4" id="data_3">
@@ -78,7 +80,7 @@
                                             <div class="form-group col-md-4">
                                                 <label>Profile Photo</label>
 
-                                                    <input type="file" name="profile_picture" class="form-control required" aria-required="true">
+                                                    <input type="file" name="profile_photo" class="form-control required" aria-required="true">
                                                 
                                             </div>
                                             <div class="form-group col-md-4">
@@ -115,7 +117,7 @@
                                             </div>
                                              <div class="form-group col-md-4">
                                                 <label>Door Number</label>
-                                                <input id="flatno" class="form-control required" placeholder="Door Number" name="flatno" type="text" aria-required="true">                    
+                                                <input id="door_number" class="form-control required" placeholder="Door Number" name="door_number" type="text" aria-required="true">                    
                                             </div> 
                                             <div class="form-group col-md-4">
                                                 <label>Address</label>
@@ -878,20 +880,20 @@
                                                     
                                                       <div class="form-group col-md-12">
                                                             <label class="checkbox checkbox-custom"> 
-                                                            <input type="checkbox" name="pp_address" id="pp_address" value="yes" checked=""><i></i> Permanent address same as present address </label> 
+                                                            <input type="checkbox" name="permanent_address_is_true" id="pp_address" value="yes" checked=""><i></i> Permanent address same as present address </label> 
                                                       </div>
                                                       <div id="permanent">
                                                           <div class="form-group col-md-4">
                                                 <label>Door Number</label>
-                                                <input id="flatno" class="form-control required" placeholder="Door Number" name="flatno" type="text" aria-required="true">                    
+                                                <input id="permanent_door_no" class="form-control required" placeholder="Door Number" name="flatno" type="text" aria-required="true">                    
                                             </div> 
                                             <div class="form-group col-md-4">
                                                 <label>Address</label>
-                                                <input id="address" class="form-control required" placeholder="Address" name="address" type="text" aria-required="true">                    
+                                                <input id="permanent_address" class="form-control required" placeholder="Address" name="permanent_address" type="text" aria-required="true">                    
                                              </div>  
                                              <div class="form-group col-md-4">
                                                 <label>Address</label>
-                                                <select name="city" data-placeholder="Choose a City..." class="form-control required chosen-select" aria-required="true">
+                                                <select name="permanent_city" data-placeholder="Choose a City..." class="form-control required chosen-select" aria-required="true">
                                                     <option value="">Select city</option>
                                                     <option value="A.Vellalapatti"> A.Vellalapatti</option>
                                                     <option value="Abiramam">   Abiramam</option>
@@ -1568,7 +1570,7 @@
                                                 </div>
                                                  <div class="form-group col-md-4">
                                                  <label>District</label>
-                                                      <select name="street_name" data-placeholder="Choose a district..." class="form-control required chosen-select" aria-required="true" >
+                                                      <select name="permanent_street_name" data-placeholder="Choose a district..." class="form-control required chosen-select" aria-required="true" >
                                                           <option>Select District</option>
                                                           <option value="Ariyalur">Ariyalur</option>
                                                           <option value="Chennai">Chennai</option>
@@ -1606,7 +1608,7 @@
                                                  </div>
                                                  <div class="form-group col-md-4">
                                                  <label>State *</label>
-                                                      <select name="state" data-placeholder="Choose a state..." class="form-control chosen-select">
+                                                      <select name="permanent_state" data-placeholder="Choose a state..." class="form-control chosen-select">
                                                             <option value="" class="required" aria-required="true">Select state</option>
                                                             <option value="Andhra Pradesh"> Andhra Pradesh</option>
                                                             <option value="Arunachal Pradesh">  Arunachal Pradesh</option>
@@ -1641,8 +1643,21 @@
                                                       </div>
                                                       <div class="form-group col-md-4">
                                                         <label>PinCode</label>
-                                                             <input id="pincode" class="form-control required" placeholder="Enter the Pincode" maxlength="6" name="pincode" type="number" aria-required="true"> 
-                                                      </div>  
+                                                             <input id="permanent_pincode" class="form-control required" placeholder="Enter the Pincode" maxlength="6" name="pincode" type="number" aria-required="true"> 
+                                                      </div> 
+                                                      <div class="form-group col-md-3">
+                                                            <label>Mobile Number</label>
+                                                            <input id="mobile1" class="form-control required" placeholder="Enter Mobile Number" name="mobile_no" type="number" aria-required="true"> 
+                                                      </div>
+                                                      <div class="form-group col-md-3">
+                                                            <label>Email ID</label>
+                                                            <input id="nominee_emailid" class="form-control" placeholder="Enter Nominee Email ID" name="email_id" type="text"> 
+                                                            
+                                                      </div> 
+                              <div class="form-group col-md-12">
+                                    <input type="submit" value="Save" class="btn btn-success pull-right">
+                              </div>
+                              {{ Form::close() }}
                                                       <div class="form-group col-md-12">
                                                             <label > 
                                                              <b>PROOF OF IDENTITY </b></label> 
@@ -1826,7 +1841,7 @@
 
                                       
 
-                                    </form>
+                               
 
                                 </div>
       <div class="tab-pane" id="tab2">

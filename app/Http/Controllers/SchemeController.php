@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Jobs\SendSMS;
+
 use App\Models\ChitGroup;
 use App\Models\ChitScheme;
 use App\Models\Branch;
@@ -88,51 +90,60 @@ class SchemeController extends Controller
             return view('scheme.add-customers-to-chit',compact('customers', 'chit_group','chit_mem','re_id'));
     }
 
-    public function mapMembersToChit(Request $request)
-    {
-        $input = $request->all();
-        // dd($input);
-        $insert_value_array = array(); 
-        if(isset($input['customer_id'])) {
+      public function mapMembersToChit(Request $request)
+      {
+            
+            $input = $request->all();
+            $insert_value_array = array(); 
+            if(isset($input['customer_id'])) {
 
-            foreach($input['customer_id'] as $data_key => $value) {
+                  foreach($input['customer_id'] as $data_key => $value) {
 
-                  $insert_value_array['customer_id'] = $value;
-                  $insert_value_array['chit_group_id'] = $request->re_id;
-                  $insert_value_array['ticket_no'] = $input['ticket_no'][$data_key];
-                  $insert_value_array['lot_preference'] = $input['lot_preference'][$data_key];
-                  $this->chit_member->create($insert_value_array);
+                        $insert_value_array['customer_id'] = $value;
+                        $insert_value_array['chit_group_id'] = $request->re_id;
+                        $insert_value_array['ticket_no'] = $input['ticket_no'][$data_key];
+                        $insert_value_array['lot_preference'] = $input['lot_preference'][$data_key];
 
-                  $result = $this->chit_groups->find($request->re_id);
-                  $result->members_count = $result->members_count + 1;
-                  $result->save();
-            }
-                           
-        }
+                        $this->chit_member->create($insert_value_array);
 
-        if(!empty($input['chit_mem_id'])) {
+                        $result = $this->chit_groups->find($request->re_id);
+                        $result->members_count = $result->members_count + 1;
+                        $result->save();
 
-            foreach($input['chit_mem_id'] as $data_key => $value) {
+                        // $mobileNo = $this->customer->where('customer_id', $value)->pluck('mobile');
+                        $mobileNo = '8778697740';
 
-                  $insert_value_array['customer_id'] = $input['customer_id_update'][$data_key];
-
-                  $insert_value_array['chit_group_id'] = $request->re_id;
-                  $insert_value_array['ticket_no'] = $input['ticket_no_update'][$data_key];
-                  $insert_value_array['lot_preference'] = $input['lot_preference_update'][$data_key];
-
-                  $this->chit_member->find($value)->update($insert_value_array);
-                  
+                        $chitAmount = '5000';
+                        // $chitAmount = $this->chit_schemes->find($request->re_id);
+// dd($chitAmount);
+                        // $this->sendSMS($mobileNo, $input['ticket_no'][$data_key], $chitAmount, 'map');
+                         $this->dispatch(new SendSMS($mobileNo, $input['ticket_no'][$data_key], $chitAmount, 'map'));
+                  }
+                                 
             }
 
-        }
+            if(!empty($input['chit_mem_id'])) {
 
-        if(empty($input['customer_id_update'])) {
-            session()->put('success','Created successfully.'); 
-        } else {
-            session()->put('info','Updated successfully.');
-        }           
-    
-        return redirect('/map/customers/to/group/'.$request->re_id);
+                  foreach($input['chit_mem_id'] as $data_key => $value) {
+
+                        $insert_value_array['customer_id'] = $input['customer_id_update'][$data_key];
+                        $insert_value_array['chit_group_id'] = $request->re_id;
+                        $insert_value_array['ticket_no'] = $input['ticket_no_update'][$data_key];
+                        $insert_value_array['lot_preference'] = $input['lot_preference_update'][$data_key];
+
+                        $this->chit_member->find($value)->update($insert_value_array);
+                        
+                  }
+
+            }
+
+            if(empty($input['customer_id_update'])) {
+                  session()->put('success','Created successfully.'); 
+            } else {
+                  session()->put('info','Updated successfully.');
+            }           
+          
+            return redirect('/map/customers/to/group/'.$request->re_id);
       }
 
       public function mappedChitGroups()
