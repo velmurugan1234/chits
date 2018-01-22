@@ -138,7 +138,7 @@
                         </thead>
                         <tbody>
                             @foreach($result as $value)
-                            <tr id="tr{{$value->chit_scheme_id}}">
+                            <tr>
                                 <td><label class="checkbox checkbox-custom-alt checkbox-custom-sm m-0"><input type="checkbox" class="selectMe"><i></i></label></td>
                               
                                 <td>{{ $value->chit_value }}</td>
@@ -149,11 +149,6 @@
                                 <td>{{ $value->investment }}</td>
                                 <td>{{ $value->dividend}}</td>
                                 <td>{{ $value->average_return }}</td>
-                                <td>
-                                    <a href="#" data-id="{{$value->chit_scheme_id}}" class="edit_scheme"><i class="fa fa-edit"></i></a>
-                                    <a href="#" data-id="{{$value->chit_scheme_id}}" class="delete_scheme"><i class="fa fa-trash-o"></i></a>
-                                </td>
-                                
                             </tr>
                             @endforeach
                         </tbody>
@@ -209,11 +204,10 @@
 
  <!-- Modal -->
         <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-             
-            <div class="modal-dialog modal-lg" id="add_modal">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title custom-font">ADD SCHEME</h3>
+                        <h3 class="modal-title custom-font">ADD / EDIT SCHEME</h3>
                     </div>
                     <div class="modal-body">
             {{ Form::open(array('route' => array('chit-scheme-store'), 'id' => 'form1', 'method' => 'POST')) }}
@@ -296,45 +290,7 @@
                         <button class="btn btn-lightred btn-ef btn-ef-4 btn-ef-4c" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Cancel</button>
                     </div>
                 </div>
-                {{ Form::close() }}
             </div>
         </div>
-        
-
-
-        <script>
-            $('.edit_scheme').click(function(){
- 
-                     
-                var arr = {};
-                arr['scheme_id'] = $(this).attr('data-id');
-                arr['_token'] = '{{csrf_token()}}',
-                $.ajax({
-                    type:"POST",
-                    url:'{{url("chit/scheme/edit")}}',
-                    data:arr,
-                    success: function(result){
-                        $('#add_modal').empty();
-                        $('#add_modal').html(result);
-                        $('#myModal2').modal('toggle');
-                    }
-                });     
-            });
-
-            $('.delete_scheme').click(function(){
-           
-                var arr = {};
-                arr['scheme_id'] = $(this).attr('data-id');
-                arr['_token'] = '{{csrf_token()}}',
-                $.ajax({
-                    type:"POST",
-                    url:'{{url("chit/scheme/delete")}}',
-                    data:arr,
-                    success: function(result){
-                        alert(result);
-                        $("#tr"+arr['scheme_id']).remove();
-                    }
-                });     
-            });
-        </script>
+        {{ Form::close() }}
 @endsection

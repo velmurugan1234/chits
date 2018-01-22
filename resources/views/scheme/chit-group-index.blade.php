@@ -19,10 +19,10 @@
         <a href="index.html"><i class="fa fa-home"></i> SathyChits</a>
     </li>
     <li>
-        <a href="#">Settings</a>
+        <a href="#">Chit Types</a>
     </li>
     <li class="active">
-        <a href="">Users</a>
+        <a href="">Chit Groups</a>
     </li>
 </ul>
 
@@ -128,11 +128,12 @@
                             <th>Chit Scheme</th>
                             <th>Branch</th>
                             <th style="width:30px;"></th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($chit_groups as $group)
-                        <tr>
+                        <tr id="tr{{$group->chit_group_id}}">
                             <td><label class="checkbox checkbox-custom-alt checkbox-custom-sm m-0"><input type="checkbox" class="selectMe"><i></i></label></td>
                             <td>{{ $group->chit_group_ticket_no }}</td>
                             <td>{{ $scheme::find($group->chit_scheme_id)->chit_value }}</td>
@@ -140,6 +141,10 @@
                             <td>
                                 <span class="check-toggler checked toggle-class" data-toggle="checked"></span>
                             </td>
+                             <td>
+                                    <a href="#" data-id="{{$group->chit_group_id}}" class="edit_group"><i class="fa fa-edit"></i></a>
+                                    <a href="#" data-id="{{$group->chit_group_id}}" class="delete_group"><i class="fa fa-trash-o"></i></a>
+                                </td>
                         </tr>
                         @endforeach  
                         </tbody>
@@ -192,17 +197,18 @@
 
 </section>
     <!--/ CONTENT -->
-{{ Form::open(array('route' => array('chit-group-store','store'), 'id' => 'form1', 'method' => 'POST')) }}
+
 
  <!-- Modal -->
         <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-lg" id="add_modal">
                 <div class="modal-content">
+                    {{ Form::open(array('route' => array('chit-group-store','store'), 'id' => 'form1', 'method' => 'POST')) }}
                     <div class="modal-header">
-                        <h3 class="modal-title custom-font">ADD / EDIT CHIT GROUP</h3>
+                        <h3 class="modal-title custom-font">ADD CHIT GROUP</h3>
                     </div>
                     <div class="modal-body">
-                      
+                                  
                   <div class="form-group">
                       <label for="inputEmail3">Chit Group Name</label>
                     
@@ -234,8 +240,52 @@
                         <button class="btn btn-success btn-ef btn-ef-3 btn-ef-3c"><i class="fa fa-arrow-right"></i> Submit</button>
                         <button class="btn btn-lightred btn-ef btn-ef-4 btn-ef-4c" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Cancel</button>
                     </div>
-                </div>
+                {{ Form::close() }}
+            </div>
+
             </div>
         </div>
-    {{ Form::close() }}
+    
+
+
+
+
+
+
+
+        <script>
+            $('.edit_group').click(function(){
+ 
+                
+                var arr = {};
+                arr['group_id'] = $(this).attr('data-id');
+                arr['_token'] = '{{csrf_token()}}',
+                $.ajax({
+                    type:"POST",
+                    url:'{{url("chit/group/edit")}}',
+                    data:arr,
+                    success: function(result){
+                        $('#add_modal').empty();
+                        $('#add_modal').html(result);
+                        $('#myModal2').modal('toggle');
+                    }
+                });     
+            });
+
+            $('.delete_group').click(function(){
+                
+                var arr = {};
+                arr['group_id'] = $(this).attr('data-id');
+                arr['_token'] = '{{csrf_token()}}',
+                $.ajax({
+                    type:"POST",
+                    url:'{{url("chit/group/delete")}}',
+                    data:arr,
+                    success: function(result){
+                        alert(result);
+                        $("#tr"+arr['group_id']).remove();
+                    }
+                });     
+            });
+        </script>
 @endsection

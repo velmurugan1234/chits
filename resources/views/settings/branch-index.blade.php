@@ -22,7 +22,7 @@
         <a href="#">Settings</a>
     </li>
     <li class="active">
-        <a href="">Users</a>
+        <a href="">Branches</a>
     </li>
 </ul>
 
@@ -117,30 +117,36 @@
 
                 <div class="table-responsive">
                     <table class="table mb-0" id="usersList">
-                        <thead>
+                           <thead>
                         <tr>
                             <th style="width:20px;">
                                 <label class="checkbox checkbox-custom-alt checkbox-custom-sm m-0">
                                     <input type="checkbox" id="select-all"><i></i>
                                 </label>
                             </th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
+                            <th>Branch Name</th>
+                            <th>Branch Code</th>
+                            <th>Branch City</th>
                             <th style="width:30px;"></th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        @foreach($branches as $branch)
+                        <tr id="tr{{$branch->branch_id}}">
                             <td><label class="checkbox checkbox-custom-alt checkbox-custom-sm m-0"><input type="checkbox" class="selectMe"><i></i></label></td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <td>{!! $branch->branch_name !!}</td>
+                            <td>{!! $branch->branch_code !!}</td>
+                            <td>{!! $branch->branch_city !!}</td>
                             <td>
                                 <span class="check-toggler checked toggle-class" data-toggle="checked"></span>
                             </td>
+                            <td>
+                                <a href="#" data-id="{{$branch->branch_id}}" class="edit_branch"><i class="fa fa-edit"></i></a>
+                                <a href="#" data-id="{{$branch->branch_id}}" class="delete_branch"><i class="fa fa-trash"></i></a>
+                            </td>
                         </tr>
-                            
+                        @endforeach  
                         </tbody>
                     </table>
                 </div>
@@ -194,10 +200,11 @@
 
  <!-- Modal -->
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-lg" id="add_modal">
 <div class="modal-content">
+    {{ Form::open(array('route' => array('branch-store'), 'id' => 'form1', 'method' => 'POST')) }}
 <div class="modal-header">
-<h3 class="modal-title custom-font">ADD / EDIT BRANCH</h3>
+<h3 class="modal-title custom-font">ADD BRANCH</h3>
 </div>
 <div class="modal-body">
  <section class="tile">
@@ -208,7 +215,7 @@
         <div class="tile-body">
 
            
-         {{ Form::open(array('route' => array('branch-store','store'), 'id' => 'form1', 'method' => 'POST')) }}
+         
           
                 <div class="row">
                 <div class="form-group col-md-4">
@@ -267,7 +274,7 @@
 
                
 
-           {{ Form::close()}}
+         
 
         </div>
         <!-- /tile body -->
@@ -283,9 +290,48 @@
     <i class="fa fa-arrow-right"></i> Submit</button>
 <button class="btn btn-lightred btn-ef btn-ef-4 btn-ef-4c" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Cancel</button>
 </div>
+  {!! Form::close()!!}
 </div>
 </div>
+
 </div>
+
+        <script>
+            $('.edit_branch').click(function(){
+ 
+                
+                var arr = {};
+                arr['branch_id'] = $(this).attr('data-id');
+                arr['_token'] = '{{csrf_token()}}',
+                $.ajax({
+                    type:"POST",
+                    url:'{{url("branch/edit")}}',
+                    data:arr,
+                    success: function(result){
+                        $('#add_modal').empty();
+                        $('#add_modal').html(result);
+                        $('#myModal2').modal('toggle');
+                    }
+                });     
+            });
+
+            $('.delete_branch').click(function(){
+                
+                var arr = {};
+                arr['branch_id'] = $(this).attr('data-id');
+                arr['_token'] = '{{csrf_token()}}',
+                $.ajax({
+                    type:"POST",
+                    url:'{{url("branch/delete")}}',
+                    data:arr,
+                    success: function(result){
+                        alert(result);
+                        $("#tr"+arr['branch_id']).remove();
+                    }
+                });     
+            });
+        </script>
+
 
 @endsection
 

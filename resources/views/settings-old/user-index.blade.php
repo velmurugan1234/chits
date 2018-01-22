@@ -22,7 +22,7 @@
         <a href="#">Settings</a>
     </li>
     <li class="active">
-        <a href="">Banks</a>
+        <a href="">Users</a>
     </li>
 </ul>
 
@@ -40,16 +40,15 @@
 
             <!-- tile header -->
             <div class="tile-header dvd dvd-btm">
-                <h1 class="custom-font"><strong>Banks</strong></h1>
+                <h1 class="custom-font"><strong>Users</strong></h1>
                 <ul class="controls">
+                	
                     <li>
                         <a data-toggle="modal" data-target="#myModal2" role="button" tabindex="0" id="add-entry">
-                            <i class="fa fa-plus mr-5"></i> Add Bank</a>
+                            <i class="fa fa-plus mr-5"></i> Add User</a>
                     </li>
-                    
-                   
                     <li class="dropdown">
-                        
+                    	
 
                         <a role="button" tabindex="0" class="dropdown-toggle settings" data-toggle="dropdown">
                             <i class="fa fa-cog"></i>
@@ -125,28 +124,23 @@
                                     <input type="checkbox" id="select-all"><i></i>
                                 </label>
                             </th>
-                            <th>Bank Name</th>
-                            <th>Account Number</th>
-                            <th>IFSC</th>
-                            <th>Branch</th>                           
-                            <th>Action</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th style="width:30px;"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($banks as $banks)
-                        <tr id="tr{{$banks->bank_id}}">
+                        <tr>
                             <td><label class="checkbox checkbox-custom-alt checkbox-custom-sm m-0"><input type="checkbox" class="selectMe"><i></i></label></td>
-                            <td>{!! $banks->bank_name !!}</td>
-                            <td>{!! $banks->account_no !!}</td>
-                            <td>{!! $banks->ifsc !!}</td>
-                            <td>{!! $banks->branch !!}</td>
-                            
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
                             <td>
-                                <a href="#" data-id="{{$banks->bank_id}}" class="edit_bank"><i class="fa fa-edit"></i></a>
-                                <a href="#" data-id="{{$banks->bank_id}}" class="delete_bank"><i class="fa fa-trash"></i></a>
+                                <span class="check-toggler checked toggle-class" data-toggle="checked"></span>
                             </td>
                         </tr>
-                        @endforeach  
+                            
                         </tbody>
                     </table>
                 </div>
@@ -159,6 +153,15 @@
             <div class="tile-footer dvd dvd-top">
                 <div class="row">
 
+                    <div class="col-sm-5 hidden-xs">
+                        <select class="input-sm form-control w-sm inline">
+                            <option value="0">Bulk action</option>
+                            <option value="1">Delete selected</option>
+                            <option value="2">Archive selected</option>
+                            <option value="3">Copy selected</option>
+                        </select>
+                        <button class="btn btn-sm btn-default">Apply</button>
+                    </div>
 
                     <div class="col-sm-3 text-center">
                         <small class="text-muted">showing 20-30 of 50 items</small>
@@ -184,76 +187,107 @@
     </div>
     <!-- /col -->
 </div>
-
-
-
-
-
-
-
-
 </div>
 
 </section>
     <!--/ CONTENT -->
+ <!-- Modal -->
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg" id="add_modal">
+<div class="modal-dialog modal-lg">
 <div class="modal-content">
 <div class="modal-header">
-<h3 class="modal-title custom-font">ADD BANK</h3>
+<h3 class="modal-title custom-font">ADD / EDIT USER</h3>
 </div>
 <div class="modal-body">
  <section class="tile">
 
             
 
-          <!-- tile body -->
-            <div class="tile-body">
+        <!-- tile body -->
+        <div class="tile-body">
 
-                {{ Form::open(array('route' => array('bank-store'), 'class' => 'form1', 'method' => 'POST')) }}
+           
+         {{ Form::open(array('route' => array('user-store'), 'id' => 'form1', 'method' => 'POST')) }}
           
-                <div class="row">
-                <div class="form-group col-md-4">
+            <div class="row">
+                <div class="form-group col-md-6">
                    
-                    {{ Form::label('bank_name', 'Bank Name') }}
-                    {{ Form::text('bank_name', null, 
+                    {{ Form::label('first_name', 'FirstName') }}
+                    {{ Form::text('first_name', null, 
                     array('class' => 'form-control col-md-8 col-xs-12', 
-                    'placeholder' => 'Enter the bank name', 'required', 
-                    'data-validate-length-range' => '100', 'data-parsley-trigger' => 'change')) }}
+                    'placeholder' => 'Enter the first name', 'required', 
+                    'data-validate-length-range' => '3', 'data-parsley-trigger' => 'change')) }}
                 </div>
 
                
-                <div class="form-group col-md-4">
-                    {{ Form::label('account_number', 'Account Number') }}
-                    {{ Form::text('account_no', null, 
+                <div class="form-group col-md-6">
+                    {{ Form::label('last_name', 'LastName') }}
+                    {{ Form::text('last_name', null, 
                     array('class' => 'form-control col-md-8 col-xs-12', 
-                    'placeholder' => 'Enter the account code', 'required', 
-                    'data-validate-length-range' => '16', 'data-parsley-trigger' => 'change')) }}
-                </div>
-                <div class="form-group col-md-4">
-                    {{ Form::label('ifsc', 'IFSC') }}
-                    {{ Form::text('ifsc', null, 
-                    array('class' => 'form-control col-md-8 col-xs-12', 
-                    'placeholder' => 'Enter the ifsc code', 'required', 
+                    'placeholder' => 'Enter the last name', 'required', 
                     'data-validate-length-range' => '6', 'data-parsley-trigger' => 'change')) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    {{ Form::label('profile_photp', 'Profile Photo') }}
+                    <input type="file" name="profile_photo" class="form-control" required data-parsley-trigger = "change">
                 </div>
                 
                 <div class="form-group col-md-6">
                   
-                    {{ Form::label('branch', 'Branch') }}
-                    {{ Form::text('branch', null, 
+                    {{ Form::label('employee_code', 'Employee Code') }}
+                    {{ Form::text('employee_code', null, 
                     array('class' => 'form-control col-md-8 col-xs-12', 
-                    'placeholder' => 'Enter the branch', 'required', 
-                    'data-validate-length-range' => '100', 'data-parsley-trigger' => 'change')) }}
+                    'placeholder' => 'Enter the employee code', 'required', 
+                    'data-validate-length-range' => '4', 'data-parsley-trigger' => 'change')) }}
                 </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                  
+                    {{ Form::label('employee_role', 'Employee Role') }}
+                    
+                    
+                   {{ Form::select('employee_role',['' => 'Select', '1'=>'Admin', '2' => 'Manager', '3' => 'Staff'], null, ['class' => 'form-control col-md-8 col-xs-12', 'required', 'data-parsley-trigger' => 'change']) }}
+
+                </div>
+                <div class="form-group col-md-6">
+                  
+                    {{ Form::label('branch', 'Branch') }}
+                    {{ Form::select('branch',['' => 'Select'] + $getBranches->toArray(), null, ['class' => 'form-control col-md-8 col-xs-12', 'required', 'data-parsley-trigger' => 'change']) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                  
+                    {{ Form::label('email', 'Email') }}
+                    {{ Form::email('email', null, 
+                    array('class' => 'form-control col-md-8 col-xs-12', 
+                    'placeholder' => 'Enter the email', 'required', 
+                    'data-validate-length-range' => '4', 'data-parsley-trigger' => 'change')) }}
+                </div>
+                <div class="form-group col-md-6">
+                  
+                    {{ Form::label('employee_contact_no', 'Employee Contact No') }}
+                    {{ Form::number('employee_contact_no', null, 
+                    array('class' => 'form-control col-md-8 col-xs-12', 
+                    'placeholder' => 'Enter the employee contact no', 'required', 
+                    'data-validate-length-range' => '6', 'id' => 'phone', 'data-parsley-trigger' => 'change',
+                    'pattern' => '^[\d\+\-\.\(\)\/\s]*$')) }}
+                </div>
+
+            </div>
+                
                 </div>
 
                
-        
 
+           {{ Form::close()}}
 
-            </div>
-            <!-- /tile body -->
+        </div>
+        <!-- /tile body -->
+
         <!-- tile footer -->
        
         <!-- /tile footer -->
@@ -265,49 +299,7 @@
     <i class="fa fa-arrow-right"></i> Submit</button>
 <button class="btn btn-lightred btn-ef btn-ef-4 btn-ef-4c" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Cancel</button>
 </div>
- {!! Form::close()!!}
 </div>
 </div>
 </div>
-
-
-
-        <script>
-            $('.edit_bank').click(function(){
- 
-                
-                var arr = {};
-                arr['bank_id'] = $(this).attr('data-id');
-                arr['_token'] = '{{csrf_token()}}',
-                $.ajax({
-                    type:"POST",
-                    url:'{{url("bank/edit")}}',
-                    data:arr,
-                    success: function(result){
-                        $('#add_modal').empty();
-                        $('#add_modal').html(result);
-                        $('#myModal2').modal('toggle');
-                    }
-                });     
-            });
-
-            $('.delete_bank').click(function(){
-                
-                var arr = {};
-                arr['bank_id'] = $(this).attr('data-id');
-                arr['_token'] = '{{csrf_token()}}',
-                $.ajax({
-                    type:"POST",
-                    url:'{{url("bank/delete")}}',
-                    data:arr,
-                    success: function(result){
-                        alert(result);
-                        $("#tr"+arr['bank_id']).remove();
-                    }
-                });     
-            });
-        </script>
-
-
 @endsection
-

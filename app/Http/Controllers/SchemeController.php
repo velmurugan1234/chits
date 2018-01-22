@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Jobs\SendSMS;
-
+use Validator;
 use App\Models\ChitGroup;
 use App\Models\ChitScheme;
 use App\Models\Branch;
@@ -35,17 +35,109 @@ class SchemeController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function schemeIndex()
+    // public function schemeIndex()
+    // {
+    //     $result = $this->chit_schemes->get();
+    //     return view('scheme.chit-scheme-index', compact('result'));
+    // }
+
+    // public function chitSchemeInsertAndUpdate(Request $request)
+    // {
+    //     $input = $request->all();
+    //     $this->chit_schemes->create($input);
+
+    // }
+
+    // public function chitGroupindex()
+    // {
+    //     $branches = $this->branch->getBranches();
+    //     $schemes = $this->chit_schemes->getChitSchemes();
+    //     $chit_groups = $this->chit_groups->get();
+    //     $branch = $this->branch;
+    //     $scheme = $this->chit_schemes;
+
+    //     return view('scheme.chit-group-index', compact('branches', 'schemes', 'chit_groups', 'branch', 'scheme'));
+    // }
+
+    // public function chitGroupInsertAndUpdate(Request $request)
+    // {
+    //     $input = $request->all();
+    //     $this->chit_groups->create($input);
+    //     return redirect()->route('chit-group-index');
+    // }
+     public function schemeIndex()
     {
         $result = $this->chit_schemes->get();
+
         return view('scheme.chit-scheme-index', compact('result'));
     }
 
-    public function chitSchemeInsertAndUpdate(Request $request)
+    public function chitSchemeInsertAndUpdate(Request $request, $id='')
     {
-        $input = $request->all();
-        $this->chit_schemes->create($input);
 
+        if($id) {
+            $input = $request->all();
+            
+            $validator = Validator::make($request->all(), 
+                [
+                    "chit_value" => 'required',
+                    "term" => 'required',
+                    "members" => 'required',
+                    "monthly_amount" => 'required',
+                    "weekly_amount" => 'required',
+                    "investment" => 'required',
+                    "dividend" => 'required',
+                    "average_return" => 'required',
+                ]
+            );
+            if ($validator->fails())
+            {
+                return redirect('/chit/scheme/index')->with('error', 'Details not submitted');
+            }
+        
+            $this->chit_schemes->find($id)->update($input);            
+            return redirect('/chit/scheme/index')->with('success', 'Updated Succcessfully');
+        } else {
+            $input = $request->all();
+            
+            $validator = Validator::make($request->all(), 
+                [
+                    "chit_value" => 'required',
+                    "term" => 'required',
+                    "members" => 'required',
+                    "monthly_amount" => 'required',
+                    "weekly_amount" => 'required',
+                    "investment" => 'required',
+                    "dividend" => 'required',
+                    "average_return" => 'required',
+                ]
+            );
+            if ($validator->fails())
+            {
+                return redirect('/chit/scheme/index')->with('error', 'Details not submitted');
+            }        
+
+            $this->chit_schemes->create($input);
+            return redirect('/chit/scheme/index')->with('success', 'Added Succcessfully');
+        }
+
+        
+        
+    }
+    public function chitSchemeEdit(Request $request) {
+
+        $scheme_id = $request->scheme_id;
+        $result = $this->chit_schemes->find($scheme_id);
+
+        return view('scheme.chit-scheme-edit',compact('result'))->render();
+    }
+
+
+    public function chitSchemeDelete(Request $request) {
+
+            $scheme_id = $request->scheme_id; // can pass array of ids to delete
+            $result = $this->chit_schemes->where('chit_scheme_id', $scheme_id)->delete();
+            return response()->json('deleted');
     }
 
     public function chitGroupindex()
@@ -55,17 +147,72 @@ class SchemeController extends Controller
         $chit_groups = $this->chit_groups->get();
         $branch = $this->branch;
         $scheme = $this->chit_schemes;
-//
+//      
+
         return view('scheme.chit-group-index', compact('branches', 'schemes', 'chit_groups', 'branch', 'scheme'));
     }
 
-    public function chitGroupInsertAndUpdate(Request $request)
+    public function chitGroupInsertAndUpdate(Request $request , $id ='')
     {
-        $input = $request->all();
-        $this->chit_groups->create($input);
-        return redirect()->route('chit-group-index');
+           
+         if($id) {
+            $input = $request->all();
+          
+            $validator = Validator::make($request->all(), 
+                [
+                    "chit_group_ticket_no" => "required",
+                      "chit_scheme_id" => 'required',
+                      "branch_id" => 'required',                      
+                ]
+            );
+            if ($validator->fails())
+            {
+                return redirect('/chit/group/index')->with('error', 'Details not submitted');
+            }
+        
+            $this->chit_groups->find($id)->update($input);            
+            return redirect('/chit/group/index')->with('success', 'Updated Succcessfully');
+        } else {
+            $input = $request->all();
+            
+            $validator = Validator::make($request->all(), 
+                [
+                    "chit_group_ticket_no" => "required",
+                      "chit_scheme_id" => 'required',
+                      "branch_id" => 'required',                      
+                ]
+            );
+            if ($validator->fails())
+            {
+                return redirect('/chit/group/index')->with('error', 'Details not submitted');
+            }        
+
+            $this->chit_groups->create($input);
+            return redirect()->route('chit-group-index');
+
+        }
+
     }
 
+    public function chitGroupEdit(Request $request) {
+
+        $group_id = $request->group_id;
+        $schemes = $this->chit_schemes->getChitSchemes();
+        $branches = $this->branch->getBranches();
+        $result = $this->chit_groups->find($group_id);        
+        return view('scheme.chit-group-edit',compact('schemes', 'branches','result'))->render();
+    }
+
+
+    public function chitGroupDelete(Request $request) {
+
+            $group_id = $request->group_id; // can pass array of ids to delete
+            $result = $this->chit_groups->where('chit_group_id', $group_id)->delete();
+            return response()->json('deleted');
+    }
+
+
+    
     public function chitMapping()
     {
         $result = $this->chit_groups->get();

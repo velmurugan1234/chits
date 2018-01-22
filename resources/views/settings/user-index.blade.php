@@ -126,21 +126,27 @@
                             </th>
                             <th>First Name</th>
                             <th>Last Name</th>
-                            <th>Username</th>
+                            <th>Email</th>
                             <th style="width:30px;"></th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        @foreach($users_list as $result )    
+                        <tr id="tr{{$result->id}}">
                             <td><label class="checkbox checkbox-custom-alt checkbox-custom-sm m-0"><input type="checkbox" class="selectMe"><i></i></label></td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <td>{{$result->first_name}}</td>
+                            <td>{{$result->last_name}}</td>
+                            <td>{{$result->email}}</td>
                             <td>
                                 <span class="check-toggler checked toggle-class" data-toggle="checked"></span>
                             </td>
+                            <td>
+                                <a href="#" data-id="{{$result->id}}" class="edit_user"><i class="fa fa-edit"></i></a>
+                                <a href="#" data-id="{{$result->id}}" class="delete_user"><i class="fa fa-trash-o"></i></a>
+                            </td>
                         </tr>
-                            
+                         @endforeach   
                         </tbody>
                     </table>
                 </div>
@@ -193,10 +199,10 @@
     <!--/ CONTENT -->
  <!-- Modal -->
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
+<div class="modal-dialog modal-lg" id="add_modal">
 <div class="modal-content">
 <div class="modal-header">
-<h3 class="modal-title custom-font">ADD / EDIT USER</h3>
+<h3 class="modal-title custom-font">ADD USER</h3>
 </div>
 <div class="modal-body">
  <section class="tile">
@@ -207,7 +213,7 @@
         <div class="tile-body">
 
            
-         {{ Form::open(array('route' => array('user-store'), 'id' => 'form1', 'method' => 'POST')) }}
+         {!! Form::open(array('route' => array('user-store'), 'id' => 'form1', 'method' => 'POST')) !!}
           
             <div class="row">
                 <div class="form-group col-md-6">
@@ -283,7 +289,7 @@
 
                
 
-           {{ Form::close()}}
+          
 
         </div>
         <!-- /tile body -->
@@ -299,7 +305,46 @@
     <i class="fa fa-arrow-right"></i> Submit</button>
 <button class="btn btn-lightred btn-ef btn-ef-4 btn-ef-4c" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Cancel</button>
 </div>
+ {!! Form::close()!!}
 </div>
 </div>
 </div>
+
+
+
+        <script>
+            $('.edit_user').click(function(){
+ 
+                
+                var arr = {};
+                arr['user_id'] = $(this).attr('data-id');
+                arr['_token'] = '{{csrf_token()}}',
+                $.ajax({
+                    type:"POST",
+                    url:'{{url("chit/user/edit")}}',
+                    data:arr,
+                    success: function(result){
+                        $('#add_modal').empty();
+                        $('#add_modal').html(result);
+                        $('#myModal2').modal('toggle');
+                    }
+                });     
+            });
+
+            $('.delete_user').click(function(){
+                
+                var arr = {};
+                arr['user_id'] = $(this).attr('data-id');
+                arr['_token'] = '{{csrf_token()}}',
+                $.ajax({
+                    type:"POST",
+                    url:'{{url("chit/user/delete")}}',
+                    data:arr,
+                    success: function(result){
+                        alert(result);
+                        $("#tr"+arr['user_id']).remove();
+                    }
+                });     
+            });
+        </script>
 @endsection
